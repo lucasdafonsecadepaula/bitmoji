@@ -4,36 +4,36 @@ import styles from "../styles/Home.module.css";
 import * as libmoji from "../../libmoji/build/index";
 
 const allPossibleFeatures = {
-  beard:0,
-  brow:0,
-  cheek_details:0,
-  ear:0,
-  eye:0,
-  eyelash:0,
-  eye_details:0,
-  face_lines:0,
-  glasses:0,
-  hair:0,
-  hat:0,
-  jaw:0,
-  mouth:0,
-  nose:0,
-  beard_tone:0,
-  blush_tone:0,
-  brow_tone:0,
-  eyeshadow_tone:0,
-  hair_tone:0,
-  hair_treatment_tone:0,
-  lipstick_tone:0,
-  pupil_tone:0,
-  skin_tone:0,
-  body:0,
-  face_proportion:0,
-  eye_spacing:0,
-  eye_size:0,
-  earring:0,
-  pupil:0,
-  breast:0,
+  beard: 0,
+  brow: 0,
+  cheek_details: 0,
+  ear: 0,
+  eye: 0,
+  eyelash: 0,
+  eye_details: 0,
+  face_lines: 0,
+  glasses: 0,
+  hair: 0,
+  hat: 0,
+  jaw: 0,
+  mouth: 0,
+  nose: 0,
+  beard_tone: 0,
+  blush_tone: 0,
+  brow_tone: 0,
+  eyeshadow_tone: 0,
+  hair_tone: 0,
+  hair_treatment_tone: 0,
+  lipstick_tone: 0,
+  pupil_tone: 0,
+  skin_tone: 0,
+  body: 0,
+  face_proportion: 0,
+  eye_spacing: 0,
+  eye_size: 0,
+  earring: 0,
+  pupil: 0,
+  breast: 0,
 };
 
 export default function Home() {
@@ -162,7 +162,6 @@ export default function Home() {
   //   },
   // };
 
-
   const replaceUrlEmoji = (att) => {
     if (att.gender[1] == 1) {
       if (att.style[1] == 1) {
@@ -192,7 +191,6 @@ export default function Home() {
         });
       }
     }
-
 
     if (att.gender[1] == 2) {
       if (att.style[1] == 1) {
@@ -226,18 +224,24 @@ export default function Home() {
   };
 
   const changeTraitsEmoji = (arr, item) => {
-    let index = traits.map((e) => e[0]).indexOf(item);
-
-    console.log(traits)
-    console.log(traits.map((e) => e[0]))
-    console.log(index)
-    console.log(item)
-    // setCharEmoji({...charEmoji, traits[index]: arr[loop[item]] });
-
-    // setLoop({...loop, item: loop[item] + 1})
-  }
-
-
+    let index = charEmoji.traits.map((e) => e[0]).indexOf(item);
+    
+    if (index == -1) {
+      let newArray = charEmoji.traits.concat(([item, arr[loop[item]]]))
+      setLoop({ ...loop, [item]: loop[item] + 1 });
+      setCharEmoji({ ...charEmoji, traits: newArray });
+      return;
+    }
+    if(loop[item] >= arr.length) {
+      charEmoji.traits[index] = [item, arr[0]];
+      setLoop({ ...loop, [item]: 0 });
+      setCharEmoji({ ...charEmoji});
+      return;
+    }
+    charEmoji.traits[index] = [item, arr[loop[item]]];
+    setLoop({ ...loop, [item]: loop[item] + 1 });
+    setCharEmoji({ ...charEmoji});
+  };
 
   return (
     <div className={styles.container}>
@@ -316,7 +320,8 @@ export default function Home() {
                 <button
                   key={e}
                   type="button"
-                  onClick={() => changeTraitsEmoji(buttonToChangeChar[1][e], e)}>
+                  onClick={() => changeTraitsEmoji(buttonToChangeChar[1][e], e)}
+                >
                   {e}
                 </button>
               );
