@@ -34,6 +34,7 @@ const allPossibleFeatures = {
   earring: 0,
   pupil: 0,
   breast: 0,
+  outfit: 0,
 };
 
 export default function Home() {
@@ -44,6 +45,7 @@ export default function Home() {
     libmoji.getOutfits(libmoji.randBrand(libmoji.getBrands(gender[0])))
   );
 
+  const [text, setText] = useState("");
   const [previewUrlEmoji, setPreviewUrlEmoji] = useState();
   const [buttonToChangeChar, setButtonToChangeChar] = useState();
   const [loop, setLoop] = useState(allPossibleFeatures);
@@ -225,23 +227,48 @@ export default function Home() {
 
   const changeTraitsEmoji = (arr, item) => {
     let index = charEmoji.traits.map((e) => e[0]).indexOf(item);
+    console.log(arr)
     
     if (index == -1) {
       let newArray = charEmoji.traits.concat(([item, arr[loop[item]]]))
-      setLoop({ ...loop, [item]: loop[item] + 1 });
       setCharEmoji({ ...charEmoji, traits: newArray });
+      setLoop({ ...loop, [item]: loop[item] + 1 });
+      setText(arr[loop[item]]);
       return;
     }
     if(loop[item] >= arr.length) {
       charEmoji.traits[index] = [item, arr[0]];
-      setLoop({ ...loop, [item]: 0 });
       setCharEmoji({ ...charEmoji});
+      setLoop({ ...loop, [item]: 0 });
+      setText(arr[0]);
       return;
     }
     charEmoji.traits[index] = [item, arr[loop[item]]];
-    setLoop({ ...loop, [item]: loop[item] + 1 });
     setCharEmoji({ ...charEmoji});
+    setLoop({ ...loop, [item]: loop[item] + 1 });
+    setText(arr[loop[item]]);
   };
+
+  const changeOutfitEmoji = () =>{
+    if(charEmoji.gender[1] === 1){
+      if(loop.outfit >= male_outfit.flat().length){
+        setCharEmoji({...charEmoji, outfit: male_outfit.flat()[0]})
+        setLoop({...loop, outfit: 0})
+        return;
+      }
+      setCharEmoji({ ...charEmoji, outfit: male_outfit.flat()[loop.outfit]})
+      setLoop({...loop, outfit: loop.outfit + 1})
+    }
+    if(charEmoji.gender[1] === 2){
+      if(loop.outfit >= female_outfit.flat().length){
+        setCharEmoji({...charEmoji, outfit: female_outfit.flat()[0]})
+        setLoop({...loop, outfit: 0})
+        return;
+      }
+      setCharEmoji({ ...charEmoji, outfit: male_outfit.flat()[loop.outfit]})
+      setLoop({...loop, outfit: loop.outfit + 1})
+    }
+  }
 
   return (
     <div className={styles.container}>
@@ -252,6 +279,7 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
+        <h1>{text}</h1>
         <img src={previewUrlEmoji} />
         <button
           type="button"
@@ -326,6 +354,9 @@ export default function Home() {
                 </button>
               );
             })}
+        </div>
+        <div>
+            <button type="button" onClick={() => changeOutfitEmoji()}>Outfits</button>
         </div>
       </main>
     </div>
